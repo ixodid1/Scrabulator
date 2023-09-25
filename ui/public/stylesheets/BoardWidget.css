@@ -1,0 +1,8 @@
+.boardContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  background: #3e3f3a;
+}
+
+/*# sourceMappingURL=BoardWidget.css.map */
