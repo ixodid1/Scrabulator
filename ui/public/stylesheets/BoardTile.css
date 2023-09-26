@@ -4,10 +4,15 @@ div[class^=tileDiv] {
 
 #tileSquare {
   border-radius: 5%;
+  position: relative;
+  left: 1px;
+  top: 1px;
 }
 
 #tileBackground {
   position: absolute;
+  margin-left: 1px;
+  margin-top: 1px;
   display: block;
   border-radius: 5%;
   background-color: #8c2d36;

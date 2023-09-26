@@ -5,6 +5,7 @@ import './App.css'
 import BoardWidget from "./display/BoardWidget.tsx";
 import Rack from './logic/Rack.tsx';
 import RackWidget from './display/RackWidget.tsx';
+import GamePage from './pages/GamePage.tsx';
 
 function myTest(){
   let socket = new WebSocket(
@@ -20,8 +21,7 @@ function App() {
 
   return (
     <>
-        <BoardWidget selectedTileIdx={-1} candidatePos={0} candidateTiles={[]} candidateTileFreq={[]} candidateHorizontal={false} candidateRow={0} candidateColumn={0} candidateMovePositions={[]} rack={new Rack()} />
-        <RackWidget maxRackTiles={7}></RackWidget>
+        <GamePage></GamePage>
     </>
   )
 }

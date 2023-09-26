@@ -1,6 +1,31 @@
 .rackWidgetDiv {
   display: flex;
   flex-direction: row;
+  margin-top: 15px;
+  justify-content: center;
+}
+
+#shuffleButton {
+  width: 48px;
+  height: 48px;
+  background-color: #8c2d36;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+#exchangeButton {
+  width: 48px;
+  height: 48px;
+  background-color: #8c2d36;
+  border-radius: 50%;
+  display: flex;
+  margin-left: 5px;
+}
+
+#exchangeButtonImage {
+  position: relative;
+  left: 7px;
+  align-self: center;
 }
 
 /*# sourceMappingURL=RackWidget.css.map */

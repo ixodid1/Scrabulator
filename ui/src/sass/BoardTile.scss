@@ -1,16 +1,22 @@
-$tileBackgroundColor: #8c2d36;
+@use "Global";
+
 
 div[class^="tileDiv"]{
     display: flex;
 }
 #tileSquare{
     border-radius: 5%;
+    position: relative;
+    left: 1px;
+    top: 1px;
 }
 #tileBackground{
     position: absolute;
+    margin-left: 1px;
+    margin-top: 1px;
     display: block;
     border-radius: 5%;
-    background-color: $tileBackgroundColor;
+    background-color: Global.$tileBackgroundColor;
 }
 #tileValue{
     position: relative;
