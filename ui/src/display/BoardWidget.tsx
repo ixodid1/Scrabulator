@@ -17,8 +17,11 @@ type State = {
     candidateMovePositions: number[]
     rack: Rack
 }
+type Props = {
+    movePlayCallback: (tiles: Letter[], movePositions: number[],row: number, col: number, horizontal: boolean) => void;
+}
 
-export default class BoardWidget extends React.Component<State>{
+export default class BoardWidget extends React.Component<Props>{
 
 
     state: State = {
@@ -33,7 +36,7 @@ export default class BoardWidget extends React.Component<State>{
         rack: new Rack()
     }
 
-    constructor(props: any){
+    constructor(props: Props){
         super(props);
         window.addEventListener("keydown", this.handleKey);
         for(var i: number = 0; i < 225; i++){
@@ -65,6 +68,9 @@ export default class BoardWidget extends React.Component<State>{
         }
         if(validKey){
             let keyCode: number = event.key.charCodeAt(0);
+            if(uppercase){
+                keyCode += 32;
+            }
             if(this.state.selectedTileIdx != -1){
                 if(this.tileRefs[this.state.selectedTileIdx].current == null){
                     return;
@@ -106,7 +112,7 @@ export default class BoardWidget extends React.Component<State>{
                 }
                 selectedTile.current!.state.isBlank = uppercase || blank;
 
-                this.state.candidateTiles.push(new Letter(keyCode - 96,blank,true));
+                this.state.candidateTiles.push(new Letter(keyCode - 97,blank,true));
                 let a = this.state.candidateHorizontal ? c : r;
                 this.state.candidateMovePositions.push(a);
 
@@ -197,6 +203,7 @@ export default class BoardWidget extends React.Component<State>{
             }
         }else if(event.key == "Enter"){
             if(this.state.candidateTiles.length > 0){
+                this.props.movePlayCallback(this.state.candidateTiles,this.state.candidateMovePositions,this.state.candidateRow,this.state.candidateColumn,this.state.candidateHorizontal);
                 this.resetToBoard(true);
                 //TODO play move
             }
@@ -204,6 +211,7 @@ export default class BoardWidget extends React.Component<State>{
     }
     resetToBoard = (hard: boolean) => {
         this.state.candidateTiles.length = 0;
+        this.state.candidateMovePositions.length = 0;
         if(hard){
             if(this.state.selectedTileIdx != -1){
                 this.tileRefs[this.state.selectedTileIdx].current!.state.selected = 0;
@@ -214,6 +222,7 @@ export default class BoardWidget extends React.Component<State>{
         for(let i = 0; i < this.state.candidateTileFreq.length; i++){
             this.state.candidateTileFreq[i] = this.state.rack.freqMap[i];
         }
+
         
         for(var i = 0; i < 225; i++){
             if(this.tileRefs[i].current!.state.played){

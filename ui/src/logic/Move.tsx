@@ -13,6 +13,7 @@ class Move{
     horizontal: boolean = true;
     word: Word = new Word();
 
+
     constructor(word: Word, row: number = 0, column: number = 0, horizontal: boolean, type: string = MoveType.Place, score: number = 0) {
         this.word = word;
         this.row = row;
@@ -43,7 +44,6 @@ class Move{
         }else if(this.type == MoveType.Phony){
 
         }
-        temp += this.word.formattedString();
         return temp;
     }
 

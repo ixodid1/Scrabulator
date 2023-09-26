@@ -18,7 +18,7 @@ type Props = {
     exchangeCallback: (tiles: string) => void;
 }
 
-export default class RackWidget extends React.Component<Props,State>{
+export default class RackWidget extends React.Component<Props>{
     
     rackTileWidgets: ReactNode[] = [];
     lettersTest: number[] = [];
@@ -89,8 +89,6 @@ export default class RackWidget extends React.Component<Props,State>{
             this.props.exchangeCallback(text);
             (elem as HTMLInputElement)!.value = "";
             div!.style.display = "none";
-
-
         }
     }
 

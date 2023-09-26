@@ -25,6 +25,10 @@ export default class Rack{
         this.count--;
     }
 
+    hasTile(idx: number): boolean {
+        return this.freqMap[idx] > 0;
+    }
+
     empty = (): boolean => {
         return this.count == 0;
     }
@@ -34,5 +38,24 @@ export default class Rack{
             this.freqMap[i] = 0;
             this.count = 0;
         }
+    }
+
+    toString = (): string => {
+        let temp = "";
+        for(let i = 0; i < 27; i++){
+            for(let k = 0; k < this.freqMap[i]; k++){
+                temp += (i == 26 ? '?' : String.fromCharCode(i + 97));
+            }
+        }
+        return temp;
+    }
+
+    clone = (): Rack => {
+        let temp: Rack = new Rack();
+        for(let i = 0; i < 27; i++){
+            temp.freqMap[i] = this.freqMap[i];
+        }
+        temp.count = this.count;
+        return temp;
     }
 }
