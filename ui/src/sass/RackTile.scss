@@ -1,0 +1,25 @@
+$tileBackgroundColor: #8c2d36;
+
+.rackTileDiv{
+    display: flex;
+}
+#rackTileBackground{
+    position:absolute;
+    display:block;
+    background-color: $tileBackgroundColor;
+
+}
+#rackTileLetter{
+    position: absolute;
+    display:inline-block;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-top: 2px;
+    text-align: center;
+    color: white;
+    font-size: 20pt;
+    font-weight: bold;
+    font-family: Roboto, serif;
+    z-index: 2;
+}
