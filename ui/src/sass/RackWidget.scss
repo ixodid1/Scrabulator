@@ -7,14 +7,30 @@
     margin-top: 15px;
     justify-content: center;
 }
-#shuffleButton{
+.exchangeInputDiv{
+    margin-top: 10px;
+    justify-content: center;
+    flex-direction: row;
+    height:30px;
+}
+#exchangeInputText{
+    font-size: 12pt;
+    top: -2px;
+    position: relative;
+    height:10px;
+    margin-right: 5px;
+    // vertical-align: top;
+    line-height: 0px;
+    // text-align:start;
+}
+#exchangeButton{
     width: 48px;
     height: 48px;
     background-color: Global.$tileBackgroundColor;
     border-radius: 50%;
     margin-right: 5px;
 }
-#exchangeButton{
+#shuffleButton{
     width: 48px;
     height: 48px;
     background-color: Global.$tileBackgroundColor;
@@ -22,7 +38,7 @@
     display:flex;
     margin-left: 5px;
 }
-#exchangeButtonImage{
+#shuffleButtonImage{
     position: relative;
     left:7px;
     align-self: center;

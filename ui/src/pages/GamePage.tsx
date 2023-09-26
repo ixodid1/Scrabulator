@@ -8,13 +8,16 @@ export default class GamePage extends React.Component{
     constructor(props: any){
         super(props);
     }
+    rackExchangeCallback = (exTiles: string) => {
+        console.log("extiles " + exTiles);
+    }
     render(){
         return (
             <>
                 <div className="gamePageDiv">
                     <div id="boardAndRackDiv">
                     <BoardWidget selectedTileIdx={-1} candidatePos={0} candidateTiles={[]} candidateTileFreq={[]} candidateHorizontal={false} candidateRow={0} candidateColumn={0} candidateMovePositions={[]} rack={new Rack()} />
-                    <RackWidget maxRackTiles={7}></RackWidget>
+                    <RackWidget maxRackTiles={7} exchangeCallback={this.rackExchangeCallback}></RackWidget>
                     </div>
                 </div>
             </>
