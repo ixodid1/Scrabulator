@@ -17,9 +17,9 @@ function startTimer(duration, display) {
   }, 1000);
 }
 
-window.unload = function () {
+function () {
   var display = document.querySelector('#timer');
-  var duration = 60 * 60 * 2; // 2 hours
+  var duration = 15; // 15 minutes
 
   startTimer(duration, display);
 };
