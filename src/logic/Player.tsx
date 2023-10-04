@@ -1,6 +1,6 @@
 import Rack from "./Rack.tsx";
 
-const PlayerType = {
+export const PlayerType = {
     Human: "Human",
     Computer: "Compooter"
 }

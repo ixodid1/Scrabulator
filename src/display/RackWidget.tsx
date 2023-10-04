@@ -15,7 +15,7 @@ type State = {
 
 type Props = {
     maxRackTiles: number
-    exchangeCallback: (tiles: string) => void;
+    exchangeCallback: (tiles: string) => void
 }
 
 export default class RackWidget extends React.Component<Props>{
@@ -32,13 +32,16 @@ export default class RackWidget extends React.Component<Props>{
 
     constructor(props: Props){
         super(props);
-        for(var i = 0; i < this.props.maxRackTiles; i++){
-            this.lettersTest[i] = i;
-            // this.rackTileWidgets[i] = <RackTile key={i} letter={-1} />;
-        }
     }
     updateRack(playerRack: Rack){
-        
+        this.lettersTest.length = 0;
+        for(var i = 0; i < 27; i++){
+            for(let k = 0; k < playerRack.freqMap[i]; k++){
+                this.lettersTest.push(i);
+            }
+            // this.rackTileWidgets[i] = <RackTile key={i} letter={-1} />;
+        }
+        this.forceUpdate();
     }
     dragStart = (e: React.DragEvent<HTMLDivElement>, pos: number) => {
         this.state.dragItemIdx = pos;

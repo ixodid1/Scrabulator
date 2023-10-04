@@ -1,25 +1,38 @@
-import { tileValues, specialSquares } from "./Constants.tsx";
+import { tileValues, getSpecialSquares, GameVariant } from "./Constants.tsx";
 import Letter from "./Letter.tsx";
 import Move, {MoveType} from "./Move.tsx";
 
 export default class Board{
     boardArray: Letter[] = [];
+    variant: GameVariant = GameVariant.OMGWords;
+    dim: number = 15;
+    specialSquares: number[] = [];
 
-    constructor() {
-        for(let i = 0; i < 225; i++){
-            this.boardArray.push(new Letter(-1,false,false));
+    constructor(variant: GameVariant = GameVariant.OMGWords) {
+        if(variant == GameVariant.OMGWords){
+            for(let i = 0; i < 225; i++){
+                this.boardArray.push(new Letter(-1,false,false));
+            }
+            this.dim = 15;
+        }else{
+            for(let i = 0; i < 441; i++){
+                this.boardArray.push(new Letter(-1,false,false));
+            }
+            this.dim = 21;
         }
+        this.variant = variant;
+        this.specialSquares = getSpecialSquares(variant);
     }
 
     tileAt = (row: number, column: number): Letter => {
-        return this.boardArray[column + (15 * row)];
+        return this.boardArray[column + (this.dim * row)];
     }
 
     setTile = (l: Letter, row: number, column: number): void => {
-        this.boardArray[column + (15 * row)] = l;
+        this.boardArray[column + (this.dim * row)] = l;
     }
     isBlank = (row: number, column: number): boolean => {
-        return this.boardArray[column + (15 * row)].blank;
+        return this.boardArray[column + (this.dim * row)].blank;
     }
     calcScore = (move: Move): number => {
         let score = 0;
@@ -38,8 +51,8 @@ export default class Board{
             let pointValue = cur.blank ? 0 : tileValues[cur.idx];
             if(cur.newTile){
                 newTileCt++;
-                if(specialSquares[col + (15 * row)] != 0){
-                    let ss = specialSquares[col + (15 * row)];
+                if(this.specialSquares[col + (this.dim * row)] != 0){
+                    let ss = this.specialSquares[col + (this.dim * row)];
                     if(ss == 1){
                         pointValue *= 2;
                     }else if(ss == 2){
@@ -48,6 +61,8 @@ export default class Board{
                         mul = 2;
                     }else if(ss == 4){
                         mul = 3;
+                    }else if(ss == 5){
+                        mul = 4;
                     }
                 }
                 crossScore += this.calcPerpScore(row,col,cur.idx,move.horizontal,cur.blank);
@@ -64,8 +79,8 @@ export default class Board{
     getCrossScore = (row: number, col: number, horizontal: boolean): number => {
         let score = 0;
         if(horizontal){
-            if(row < 14){
-                for(let i = row + 1; i < 15; i++){
+            if(row < (this.dim - 1)){
+                for(let i = row + 1; i < this.dim; i++){
                     if(this.tileAt(i,col).null()){
                         break;
                     }else{
@@ -83,8 +98,8 @@ export default class Board{
                 }
             }
         }else{
-            if(col < 14){
-                for(let i = col + 1; i < 15; i++){
+            if(col < (this.dim - 1)){
+                for(let i = col + 1; i < this.dim; i++){
                     if(this.tileAt(row,col).null()){
                         break;
                     }else{
@@ -107,8 +122,8 @@ export default class Board{
     calcPerpScore = (row: number, col: number, tileIdx: number, horizontal: boolean, blank: boolean): number => {
         let mul = 1;
         let totalScore = blank ? 0 : tileValues[tileIdx];
-        if(specialSquares[col + (15 * row)] != 0){
-            let ss = specialSquares[col + (15 * row)];
+        if(this.specialSquares[col + (this.dim * row)] != 0){
+            let ss = this.specialSquares[col + (this.dim * row)];
             if(ss == 1){
                 totalScore *= 2;
             }else if(ss == 2){
@@ -117,11 +132,13 @@ export default class Board{
                 mul = 2;
             }else if(ss == 4){
                 mul = 3;
+            }else if(ss == 5){
+                mul = 4;
             }
         }
         let hasCross = false;
         if(horizontal){
-            if(row < 14){
+            if(row < (this.dim - 1)){
                 if(!this.tileAt(row + 1,col).null()){
                     hasCross = true;
                 }
@@ -132,7 +149,7 @@ export default class Board{
                 }
             }
         }else{
-            if(col < 14){
+            if(col < (this.dim - 1)){
                 if(!this.tileAt(row,col + 1).null()){
                     hasCross = true;
                 }

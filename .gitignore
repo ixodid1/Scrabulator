@@ -1,6 +1,7 @@
 /cmake-build-debug
-/ui/node_modules
+/node_modules
 /build
 /.idea
 /.cache
 /.vscode
+/dist
