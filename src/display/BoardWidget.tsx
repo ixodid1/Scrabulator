@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { tileSize } from "../logic/Constants.tsx";
 import Letter from "../logic/Letter.tsx";
 import Rack from "../logic/Rack.tsx";
+import Board from "../logic/Board.tsx";
 
 type State = {
     selectedTileIdx: number
@@ -15,10 +16,13 @@ type State = {
     candidateRow: number
     candidateColumn: number
     candidateMovePositions: number[]
+    board: Board
     rack: Rack
 }
 type Props = {
     movePlayCallback: (tiles: Letter[], movePositions: number[],row: number, col: number, horizontal: boolean) => void;
+    dimension: number
+    initialBoard: Board
 }
 
 export default class BoardWidget extends React.Component<Props>{
@@ -33,15 +37,20 @@ export default class BoardWidget extends React.Component<Props>{
         candidateRow: -1,
         candidateColumn: -1,
         candidateMovePositions: [],
+        board: new Board(),
         rack: new Rack()
     }
 
     constructor(props: Props){
         super(props);
         window.addEventListener("keydown", this.handleKey);
-        for(var i: number = 0; i < 225; i++){
+        this.state.board = this.props.initialBoard;
+        for(var i = 0; i < (this.props.dimension * this.props.dimension); i++){
             this.tileRefs[i] = React.createRef<BoardTile>();
-            this.tiles[i] = <BoardTile key={i} tileNum={i} tileClickedCallback={this.tileClicked} ref={this.tileRefs[i]} />;
+            this.tiles[i] = <BoardTile key={i} tileNum={i} tileClickedCallback={this.tileClicked} ref={this.tileRefs[i]} specialSquare={this.state.board.specialSquares[i]} />;
+        }
+        for(let i = 0; i < 27; i++){
+            this.state.candidateTileFreq.push(0);
         }
     }
     tiles: ReactNode[] = [];
@@ -49,7 +58,7 @@ export default class BoardWidget extends React.Component<Props>{
     render(){
         return (
             <>
-                <div className="boardContainer" style={{width: tileSize * 15, height: tileSize * 15}}>
+                <div className="boardContainer" style={{width: tileSize * this.state.board.dim, height: tileSize * this.state.board.dim}}>
                     {this.tiles.map(component => {
                         return component;
                     })}
@@ -80,15 +89,15 @@ export default class BoardWidget extends React.Component<Props>{
                 var prevSelected:number = this.tileRefs[this.state.selectedTileIdx].current!.state.selected;
 
                 //number is floating point
-                let r:number = Math.floor(this.state.selectedTileIdx / 15);
-                let c:number = this.state.selectedTileIdx % 15;
+                let r:number = Math.floor(this.state.selectedTileIdx / this.state.board.dim);
+                let c:number = this.state.selectedTileIdx % this.state.board.dim;
 
                 //TODO this should never execute
-                if(r > 14 || r < 0 || c > 14 || c < 0){
-                    console.log("r or c case");
-                    return;
-                }
-                selectedTile.current!.state.letter = String.fromCharCode(keyCode);
+                // if(r > 14 || r < 0 || c > 14 || c < 0){
+                //     console.log("r or c case");
+                //     return;
+                // }
+                selectedTile.current!.state.letter.idx = keyCode - 97;
                 selectedTile.current!.state.played = true;
 
                 let blank = false;
@@ -119,19 +128,19 @@ export default class BoardWidget extends React.Component<Props>{
                 selectedTile.current!.state.selected = 0;
                 selectedTile.current!.forceUpdate();
 
-                if((c == 14 && prevSelected == 1) || (r == 14 && prevSelected == 2)){
+                if((c == (this.state.board.dim - 1) && prevSelected == 1) || (r == (this.state.board.dim - 1) && prevSelected == 2)){
                     selectedTile.current!.state.selected = 0;
                     selectedTile.current!.forceUpdate();
                     this.state.selectedTileIdx = -1;
                     return;
                 }
-                if(r < 15 && r >= 0 && c < 15 && c >= 0){
+                if(r < this.state.board.dim && r >= 0 && c < this.state.board.dim && c >= 0){
                     if(prevSelected == 1){
                         c++;
-                        while(c < 15 && this.tileRefs[c + (15 * r)].current!.state.letter != ""){
+                        while(c < this.state.board.dim && this.tileRefs[c + (this.state.board.dim * r)].current!.state.letter.idx != -1){
                             c++;
                         }
-                        if(c > 14){
+                        if(c > (this.state.board.dim - 1)){
                             selectedTile.current!.state.selected = 0;
                             selectedTile.current!.forceUpdate();
                             this.state.selectedTileIdx = -1;
@@ -140,10 +149,10 @@ export default class BoardWidget extends React.Component<Props>{
                     }
                     if(prevSelected == 2){
                         r++;
-                        while(r < 15 && this.tileRefs[c + (15 * r)].current!.state.letter != ""){
+                        while(r < this.state.board.dim && this.tileRefs[c + (this.state.board.dim * r)].current!.state.letter.idx != -1){
                             r++;
                         }
-                        if(r > 14){
+                        if(r > (this.state.board.dim - 1)){
                             selectedTile.current!.state.selected = 0;
                             selectedTile.current!.forceUpdate();
                             this.state.selectedTileIdx = -1;
@@ -153,7 +162,7 @@ export default class BoardWidget extends React.Component<Props>{
                 }else{
                     selectedTile.current!.state.selected = 0;
                 }
-                this.state.selectedTileIdx = (c + (15 * r));
+                this.state.selectedTileIdx = (c + (this.state.board.dim * r));
                 this.tileRefs[this.state.selectedTileIdx].current!.state.selected = prevSelected;
                 this.tileRefs[this.state.selectedTileIdx].current!.forceUpdate();
             }
@@ -163,14 +172,14 @@ export default class BoardWidget extends React.Component<Props>{
                 let r = this.state.candidateHorizontal ? this.state.candidateRow : this.state.candidateMovePositions[this.state.candidateMovePositions.length - 1];
                 let c = this.state.candidateHorizontal ? this.state.candidateMovePositions[this.state.candidateMovePositions.length - 1] : this.state.candidateColumn;
                 if(this.state.selectedTileIdx == -1){
-                    if(this.state.candidateTiles[this.state.candidateTiles.length - 1] && this.state.candidateTileFreq[26] < this.state.rack.freqMap[26]){
+                    if(this.state.candidateTiles[this.state.candidateTiles.length - 1].blank && this.state.candidateTileFreq[26] < this.state.rack.freqMap[26]){
                         this.state.candidateTileFreq[26]++;
-                    }else if(this.state.candidateTileFreq[this.state.candidateTiles.length - 1] < this.state.rack.freqMap[this.state.candidateTiles.length - 1]){
-                        this.state.candidateTileFreq[this.state.candidateTiles.length - 1]++;
+                    }else if(this.state.candidateTileFreq[this.state.candidateTiles[this.state.candidateTiles.length - 1].idx] < this.state.rack.freqMap[this.state.candidateTiles[this.state.candidateTiles.length - 1].idx]){
+                        this.state.candidateTileFreq[this.state.candidateTiles[this.state.candidateTiles.length - 1].idx]++;
                     }
                     this.state.candidateTiles.length--;
-                    this.state.selectedTileIdx = (c + (15 * r));
-                    this.tileRefs[this.state.selectedTileIdx].current!.state.letter = "";
+                    this.state.selectedTileIdx = (c + (this.state.board.dim * r));
+                    this.tileRefs[this.state.selectedTileIdx].current!.state.letter.idx = -1;
                     this.tileRefs[this.state.selectedTileIdx].current!.state.isBlank = false;
                     this.tileRefs[this.state.selectedTileIdx].current!.state.selected = this.state.candidateHorizontal ? 1 : 2;
                     this.tileRefs[this.state.selectedTileIdx].current!.forceUpdate();
@@ -179,19 +188,19 @@ export default class BoardWidget extends React.Component<Props>{
                 }else if(pos >= 0){
                     let prevSelected: number = this.tileRefs[this.state.selectedTileIdx].current!.state.selected;
 
-                    if(this.state.candidateTiles[this.state.candidateTiles.length - 1] && this.state.candidateTileFreq[26] < this.state.rack.freqMap[26]){
+                    if(this.state.candidateTiles[this.state.candidateTiles.length - 1].blank && this.state.candidateTileFreq[26] < this.state.rack.freqMap[26]){
                         this.state.candidateTileFreq[26]++;
-                    }else if(this.state.candidateTileFreq[this.state.candidateTiles.length - 1] < this.state.rack.freqMap[this.state.candidateTiles.length - 1]){
-                        this.state.candidateTileFreq[this.state.candidateTiles.length - 1]++;
+                    }else if(this.state.candidateTileFreq[this.state.candidateTiles[this.state.candidateTiles.length - 1].idx] < this.state.rack.freqMap[this.state.candidateTiles[this.state.candidateTiles.length - 1].idx]){
+                        this.state.candidateTileFreq[this.state.candidateTiles[this.state.candidateTiles.length - 1].idx]++;
                     }
                     this.state.candidateTiles.length--;
                     this.tileRefs[this.state.selectedTileIdx].current!.state.selected = 0;
                     this.tileRefs[this.state.selectedTileIdx].current!.forceUpdate();
 
 
-                    this.state.selectedTileIdx = (c + (15 * r));
+                    this.state.selectedTileIdx = (c + (this.state.board.dim * r));
 
-                    this.tileRefs[this.state.selectedTileIdx].current!.state.letter = "";
+                    this.tileRefs[this.state.selectedTileIdx].current!.state.letter.idx = -1;
                     this.tileRefs[this.state.selectedTileIdx].current!.state.isBlank = false;
 
                     this.tileRefs[this.state.selectedTileIdx].current!.state.selected = prevSelected;
@@ -224,12 +233,23 @@ export default class BoardWidget extends React.Component<Props>{
         }
 
         
-        for(var i = 0; i < 225; i++){
+        for(var i = 0; i < (this.state.board.dim * this.state.board.dim); i++){
             if(this.tileRefs[i].current!.state.played){
-                this.tileRefs[i].current!.state.letter = "";
+                this.tileRefs[i].current!.state.letter.idx = -1;
                 this.tileRefs[i].current!.state.played = false;
                 this.tileRefs[i].current!.state.isBlank = false;
                 this.tileRefs[i].current!.forceUpdate();
+            }
+        }
+        for(let r = 0; r < this.state.board.dim; r++){
+            for(let c = 0; c < this.state.board.dim; c++){
+                let idx = c + (this.state.board.dim * r);
+                if(this.tileRefs[idx].current!.state.letter.idx != this.state.board.tileAt(r,c).idx){
+                    this.tileRefs[idx].current!.state.letter.idx = this.state.board.tileAt(r,c).idx;
+                    this.tileRefs[idx].current!.state.played = false;
+                    this.tileRefs[idx].current!.state.isBlank = this.state.board.isBlank(r,c);
+                    this.tileRefs[idx].current!.forceUpdate();
+                }
             }
         }
     }

@@ -1,9 +1,9 @@
 import Word from "./Word.tsx";
 
-export const MoveType = {
-    Place: "Place",
-    Exchange: "Exchange",
-    Phony: "Phony"
+export const enum MoveType{
+    Place = "Place",
+    Exchange = "Exchange",
+    Phony =  "Phony"
 }
 class Move{
     row: number = 0;
@@ -14,7 +14,7 @@ class Move{
     word: Word = new Word();
 
 
-    constructor(word: Word, row: number = 0, column: number = 0, horizontal: boolean, type: string = MoveType.Place, score: number = 0) {
+    constructor(word: Word = new Word(), row: number = 0, column: number = 0, horizontal: boolean = true, type: string = MoveType.Place, score: number = 0) {
         this.word = word;
         this.row = row;
         this.column = column;

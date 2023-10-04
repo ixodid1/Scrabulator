@@ -1,14 +1,16 @@
-import Player from "./Player.tsx";
+import Player, { PlayerType } from "./Player.tsx";
 import Bag from "./Bag.tsx";
 import Board from "./Board.tsx";
 import Move, {MoveType} from "./Move.tsx";
 import Letter from "./Letter.tsx";
 import Word from "./Word.tsx";
-import Rack from "./Rack.tsx";
+import Rack, { rackFromString } from "./Rack.tsx";
+// import { getBestMove } from "../wasm/WASMUtil.tsx";
+import { GameVariant } from "./Constants.tsx";
 
 export default class Game{
     bag: Bag = new Bag();
-    board: Board = new Board();
+    board: Board  = new Board();
 
     player1: Player = new Player();
     player2: Player = new Player();
@@ -19,8 +21,14 @@ export default class Game{
 
     gamestateChangedCallback: () => void;
 
-    constructor(callback: () => void) {
+    constructor(callback: () => void, variant: GameVariant = GameVariant.OMGWords) {
         this.gamestateChangedCallback = callback;
+        this.board = new Board(variant);
+        this.player1.name = "You";
+        this.player2.name = "Nigel Richards";
+        this.player2.type = PlayerType.Computer;
+        this.player1.rack.drawTiles(this.bag,true);
+        this.player2.rack.drawTiles(this.bag,true);
     }
 
     currentScore = (): number => {
@@ -34,14 +42,14 @@ export default class Game{
         for(let i = 0; i < move.word.count(); i++){
             let r = move.horizontal ? move.row : move.row + i;
             let c = move.horizontal ? move.column + i : move.column;
-            if(r == 7 || c == 7){
+            if(r == Math.floor(this.board.dim / 2) || c == Math.floor(this.board.dim / 2)){
                 return false;
             }
             if(!move.word.letters[i].newTile){
                 return false;
             }
             if(move.horizontal){
-                if(r < 14){
+                if(r < (this.board.dim - 1)){
                     if(!this.board.tileAt(r + 1,c).null()){
                         return false;
                     }
@@ -52,7 +60,7 @@ export default class Game{
                     }
                 }
             }else{
-                if(c < 14){
+                if(c < (this.board.dim - 1)){
                     if(!this.board.tileAt(r,c + 1).null()){
                         return false;
                     }
@@ -69,7 +77,6 @@ export default class Game{
 
     handlePlaceMove = (move: Move): boolean => {
         let copy: Rack = this.currentPlayer().rack.clone();
-        console.log(copy.toString());
         for(let letter of move.word.letters){
             let idx = letter.blank ? 26 : letter.idx;
             if(letter.newTile){
@@ -82,6 +89,7 @@ export default class Game{
             }
         }
         if(this.floatingMove(move)){
+            console.log("Move is not playable: floating move " + move.formattedString());
             return false;
         }
         this.scorelessTurns = 0;
@@ -98,12 +106,16 @@ export default class Game{
     }
 
     playMove = (move: Move): boolean => {
+        console.log("playmove called");
         if(move.type == MoveType.Place){
             let valid:boolean = this.handlePlaceMove(move);
             if(valid){
+                this.currentPlayer().rack.drawTiles(this.bag,true);
                 if(this.currentPlayer().rack.empty()){
                     this.handleGameEnd();
                 }
+            }else{
+                return false;
             }
         }else if(move.type == MoveType.Exchange){
 
@@ -111,7 +123,12 @@ export default class Game{
         if(this.scorelessTurns >= 6){
             this.handle6Pass();
         }
+        this.playerTurn = !this.playerTurn;
+        this.computerMove();
+
         this.gamestateChangedCallback();
+
+
         return false;
     }
     playMoveFromTyping = (tiles: Letter[], movePositions: number[],row: number, col: number, horizontal: boolean): void => {
@@ -122,7 +139,7 @@ export default class Game{
         let fix = true;
         let buffer:Letter[] = [];
         if(moveHorizontal){
-            if(row < 14){
+            if(row < (this.board.dim - 1)){
                 if(!this.board.tileAt(row + 1,col).null()){
                     fix = false;
                 }
@@ -133,7 +150,7 @@ export default class Game{
                 }
             }
         }else{
-            if(col < 14){
+            if(col < (this.board.dim - 1)){
                 if(!this.board.tileAt(row,col + 1).null()){
                     fix =  false;
                 }
@@ -185,7 +202,7 @@ export default class Game{
                 }
             }
         }
-        while(newC < 15 && newR < 15 && !this.board.tileAt(newR,newC).null()){
+        while(newC < this.board.dim && newR < this.board.dim && !this.board.tileAt(newR,newC).null()){
             let cur1 = this.board.tileAt(newR,newC);
             buffer.push(new Letter(cur1.idx,this.board.isBlank(newR,newC),false));
             if(moveHorizontal){
@@ -202,4 +219,10 @@ export default class Game{
 
         this.playMove(move);
     }
-}
+    computerMove = () => {
+        if(this.currentPlayer().type == PlayerType.Computer){
+            // let move = getBestMove(this.board,this.bag,this.currentPlayer().rack);
+            // this.playMove(move);
+        }
+    }
+} 

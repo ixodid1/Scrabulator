@@ -11,7 +11,10 @@ export default class Letter{
         this.newTile = newTile;
     }
     toCharCode = (): number => {
-        return (this.idx + 'a'.charCodeAt(0));
+        return (this.idx + 97);
+    }
+    toChar = (): string => {
+        return String.fromCharCode(this.idx + 97);
     }
     null = (): boolean => {
         return this.idx == -1;
