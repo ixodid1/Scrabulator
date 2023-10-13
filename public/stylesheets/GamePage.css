@@ -1,12 +1,12 @@
 .gamePageDiv {
   display: flex;
   position: relative;
-  left: -10%;
   margin-top: 10px;
 }
 
 .infoDiv {
   margin-left: 15px;
+  width: 400px;
 }
 
 /*# sourceMappingURL=GamePage.css.map */

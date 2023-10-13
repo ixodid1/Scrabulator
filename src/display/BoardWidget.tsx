@@ -49,7 +49,7 @@ export default class BoardWidget extends React.Component<Props>{
             this.tileRefs[i] = React.createRef<BoardTile>();
             this.tiles[i] = <BoardTile key={i} tileNum={i} tileClickedCallback={this.tileClicked} ref={this.tileRefs[i]} specialSquare={this.state.board.specialSquares[i]} />;
         }
-        for(let i = 0; i < 27; i++){
+        for(let i = 0; i < 27; i++){ 
             this.state.candidateTileFreq.push(0);
         }
     }
@@ -84,7 +84,6 @@ export default class BoardWidget extends React.Component<Props>{
                 if(this.tileRefs[this.state.selectedTileIdx].current == null){
                     return;
                 }
-                // console.log("tileidx " +  this.state.selectedTileIdx);
                 let selectedTile: RefObject<BoardTile> = this.tileRefs[this.state.selectedTileIdx];
                 var prevSelected:number = this.tileRefs[this.state.selectedTileIdx].current!.state.selected;
 
@@ -92,11 +91,6 @@ export default class BoardWidget extends React.Component<Props>{
                 let r:number = Math.floor(this.state.selectedTileIdx / this.state.board.dim);
                 let c:number = this.state.selectedTileIdx % this.state.board.dim;
 
-                //TODO this should never execute
-                // if(r > 14 || r < 0 || c > 14 || c < 0){
-                //     console.log("r or c case");
-                //     return;
-                // }
                 selectedTile.current!.state.letter.idx = keyCode - 97;
                 selectedTile.current!.state.played = true;
 
@@ -214,7 +208,6 @@ export default class BoardWidget extends React.Component<Props>{
             if(this.state.candidateTiles.length > 0){
                 this.props.movePlayCallback(this.state.candidateTiles,this.state.candidateMovePositions,this.state.candidateRow,this.state.candidateColumn,this.state.candidateHorizontal);
                 this.resetToBoard(true);
-                //TODO play move
             }
         }
     }

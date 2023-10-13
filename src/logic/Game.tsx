@@ -19,6 +19,8 @@ export default class Game{
 
     scorelessTurns: number = 0;
 
+    historyList: GameHistoryEntry[];
+
     gamestateChangedCallback: () => void;
 
     constructor(callback: () => void, variant: GameVariant = GameVariant.OMGWords) {
@@ -29,6 +31,8 @@ export default class Game{
         this.player2.type = PlayerType.Computer;
         this.player1.rack.drawTiles(this.bag,true);
         this.player2.rack.drawTiles(this.bag,true);
+
+        this.historyList = Array<GameHistoryEntry>();
     }
 
     currentScore = (): number => {
@@ -42,7 +46,7 @@ export default class Game{
         for(let i = 0; i < move.word.count(); i++){
             let r = move.horizontal ? move.row : move.row + i;
             let c = move.horizontal ? move.column + i : move.column;
-            if(r == Math.floor(this.board.dim / 2) || c == Math.floor(this.board.dim / 2)){
+            if(r == Math.floor(this.board.dim / 2) && c == Math.floor(this.board.dim / 2)){
                 return false;
             }
             if(!move.word.letters[i].newTile){
@@ -95,6 +99,9 @@ export default class Game{
         this.scorelessTurns = 0;
         this.board.playMove(move);
         this.currentPlayer().score += move.score;
+
+        this.historyList.push({board: this.board, move: move, player1: new Player(this.player1.name,this.player1.score,this.player1.rack,this.player1.type), player2: new Player(this.player2.name,this.player2.score,this.player2.rack,this.player2.type), turn: this.playerTurn});
+
         this.currentPlayer().rack = copy;
         return true;
     }
@@ -139,17 +146,6 @@ export default class Game{
         let fix = true;
         let buffer:Letter[] = [];
         if(moveHorizontal){
-            if(row < (this.board.dim - 1)){
-                if(!this.board.tileAt(row + 1,col).null()){
-                    fix = false;
-                }
-            }
-            if(row > 0){
-                if(!this.board.tileAt(row - 1,col).null()){
-                    fix =  false;
-                }
-            }
-        }else{
             if(col < (this.board.dim - 1)){
                 if(!this.board.tileAt(row,col + 1).null()){
                     fix =  false;
@@ -160,12 +156,22 @@ export default class Game{
                     fix =  false;
                 }
             }
+        }else{
+            if(row < (this.board.dim - 1)){
+                if(!this.board.tileAt(row + 1,col).null()){
+                    fix = false;
+                }
+            }
+            if(row > 0){
+                if(!this.board.tileAt(row - 1,col).null()){
+                    fix =  false;
+                }
+            }
         }
         if(fix && tiles.length == 1){
             moveHorizontal = !moveHorizontal;
         }
         buffer.push(tiles[0]);
-
         let tilesPos = 1;
 
         let newR = moveHorizontal ? row : row - 1;
@@ -225,4 +231,12 @@ export default class Game{
             // this.playMove(move);
         }
     }
-} 
+}
+
+export interface GameHistoryEntry{
+    board: Board;
+    turn: boolean;
+    move: Move;
+    player1: Player;
+    player2: Player;
+}

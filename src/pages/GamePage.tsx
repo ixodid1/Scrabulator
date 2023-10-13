@@ -7,6 +7,7 @@ import Letter from "../logic/Letter";
 import Game from "../logic/Game";
 import ScoreDisplayWidget from "../display/ScoreDisplayWidget";
 import { GameVariant } from "../logic/Constants";
+import MoveHistoryWidget from "../display/MoveHistoryWidget";
 
 // type State = {
 //     game: Game;
@@ -29,13 +30,17 @@ export default class GamePage extends React.Component<Props>{
         this.state.scoreDisplayRef.current!.state.player2 = this.state.game.player2;
         this.state.scoreDisplayRef.current!.forceUpdate();
 
+        this.state.moveHistoryRef.current!.state.moveList = this.state.game.historyList;
+        this.state.moveHistoryRef.current!.forceUpdate();
+
     }
 
     state = {
         game: new Game(this.gameUpdateCallback),
         rackWidgetRef: React.createRef<RackWidget>(),
         boardWidgetRef: React.createRef<BoardWidget>(),
-        scoreDisplayRef: React.createRef<ScoreDisplayWidget>()
+        scoreDisplayRef: React.createRef<ScoreDisplayWidget>(),
+        moveHistoryRef: React.createRef<MoveHistoryWidget>()
 
     }
 
@@ -67,6 +72,7 @@ export default class GamePage extends React.Component<Props>{
                     </div>
 
                     <div className="infoDiv">
+                        <MoveHistoryWidget ref={this.state.moveHistoryRef}></MoveHistoryWidget>
                         <ScoreDisplayWidget ref={this.state.scoreDisplayRef}/>
                     </div>
                 </div>
