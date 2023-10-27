@@ -51,6 +51,9 @@ export default class GamePage extends React.Component<Props>{
     rackExchangeCallback = (exTiles: string) => {
         console.log("extiles " + exTiles);
     }
+    exchangeFieldClickedCallback = () => {
+        this.state.boardWidgetRef.current!.resetToBoard(true);
+    }
     boardPlayCallback = (tiles: Letter[], movePositions: number[],row: number, col: number, horizontal: boolean) => {
         this.state.game.playMoveFromTyping(tiles,movePositions,row,col,horizontal);
     }
@@ -68,7 +71,7 @@ export default class GamePage extends React.Component<Props>{
                 <div className="gamePageDiv">
                     <div id="boardAndRackDiv">
                     <BoardWidget movePlayCallback={this.boardPlayCallback} ref={this.state.boardWidgetRef} dimension={dimension} initialBoard={this.state.game.board} />
-                    <RackWidget maxRackTiles={7} exchangeCallback={this.rackExchangeCallback} ref={this.state.rackWidgetRef} ></RackWidget>
+                    <RackWidget maxRackTiles={7} exchangeCallback={this.rackExchangeCallback} exchangeFieldClickedCallback={this.exchangeFieldClickedCallback} ref={this.state.rackWidgetRef} ></RackWidget>
                     </div>
 
                     <div className="infoDiv">

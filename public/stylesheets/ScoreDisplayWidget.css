@@ -1,0 +1,24 @@
+.scoreDisplayDiv {
+  display: flex;
+  flex-direction: column;
+  height: 10%;
+}
+
+#player1ScoreDiv, #player2ScoreDiv {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10%;
+}
+
+#player1Score, #player2Score {
+  margin-left: auto;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#player1Name, #player2Name {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+/*# sourceMappingURL=ScoreDisplayWidget.css.map */

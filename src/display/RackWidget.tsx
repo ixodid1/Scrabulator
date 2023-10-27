@@ -16,6 +16,7 @@ type State = {
 type Props = {
     maxRackTiles: number
     exchangeCallback: (tiles: string) => void
+    exchangeFieldClickedCallback: () => void;
 }
 
 export default class RackWidget extends React.Component<Props>{
@@ -103,7 +104,7 @@ export default class RackWidget extends React.Component<Props>{
 
                 <div className="exchangeInputDiv" style={{display:"none"}}>
                     <p id="exchangeInputText">Exchange:</p>
-                    <input id="exchangeInput" onKeyDown={(e: React.KeyboardEvent) => this.handleExchangeKeyEvent(e)}></input>
+                    <input id="exchangeInput" onKeyDown={(e: React.KeyboardEvent) => this.handleExchangeKeyEvent(e)} onFocus={() => this.props.exchangeFieldClickedCallback()}></input>
                 </div>
                 <div className="rackWidgetDiv">
                 

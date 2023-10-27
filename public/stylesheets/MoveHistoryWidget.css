@@ -1,0 +1,41 @@
+.moveHistoryDiv {
+  width: inherit;
+  height: 80%;
+}
+
+#moveHistoryEntry {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  margin-right: 10px;
+}
+
+#moveHistoryEntryName {
+  width: 40%;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#moveString {
+  width: 40%;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#scoreDiv {
+  margin-left: auto;
+  display: flex;
+}
+
+#moveScore, #totalScore {
+  margin: 0px;
+}
+
+ul {
+  padding: 0px;
+  max-height: 60%;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+/*# sourceMappingURL=MoveHistoryWidget.css.map */

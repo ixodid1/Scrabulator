@@ -28,10 +28,13 @@
   position: relative;
   display: block;
   color: white;
-  margin: 0;
+  margin-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 3px;
   top: 80%;
   line-height: 0;
-  left: 75%;
+  float: right;
   font-size: 10pt;
   font-weight: bold;
   font-family: Roboto, serif;
