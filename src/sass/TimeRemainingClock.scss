@@ -1,0 +1,24 @@
+.TimeRemainingClock {
+  text-align: center;
+  font-family: Arial, sans-serif;
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin: 5px;
+  }
+
+  button:disabled {
+    background-color: lightgray;
+    cursor: not-allowed;
+  }
+}
