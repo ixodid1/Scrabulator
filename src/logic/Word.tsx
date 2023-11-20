@@ -40,4 +40,12 @@ export default class Word {
         }
         return temp;
     }
+    rawString = (): string => {
+        let temp: string = "";
+        for(let i = 0; i < this.count(); i++){
+            let l = this.letters[i];
+            temp += String.fromCharCode(l.toCharCode());
+        }
+        return temp;
+    }
 }

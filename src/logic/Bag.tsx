@@ -17,6 +17,24 @@ export default class Bag{
         }
         return letterAt;
     }
+    removeTile = (idx: number) : void => {
+        let newLetters: number[] = [];
+        let flag: boolean = false;
+        for (let i of this.letters){
+            if(!flag){
+                if(i == idx){
+                    flag = true;
+                    continue;
+                }
+            }
+            newLetters.push(i);
+        }
+        this.letters = newLetters;
+    }
+    addTile = (idx : number) : void => {
+        this.letters.push(idx);
+        this.shuffleArray(this.letters);
+    }
     count = (): number => {
         return this.letters.length;
     }

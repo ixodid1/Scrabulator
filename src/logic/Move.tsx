@@ -1,4 +1,5 @@
 import Word from "./Word.tsx";
+import Letter from "./Letter.tsx";
 
 export const enum MoveType{
     Place = "Place",
@@ -21,6 +22,14 @@ class Move{
         this.type = type;
         this.score = score;
         this.horizontal = horizontal;
+    }
+    static exchangeMove = (s: string): Move => {
+        let w: Word = new Word();
+        for(let i = 0; i < s.length; i++){
+            let l: Letter = new Letter(s[i] == '?' ? 26 : s.charCodeAt(i) - 97,i == 26,true);
+            w.add(l);
+        }
+        return new Move(w,0,0,true,MoveType.Exchange,0);
     }
 
     formattedCoords = (): string => {

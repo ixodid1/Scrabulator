@@ -8,6 +8,7 @@ import Game from "../logic/Game";
 import ScoreDisplayWidget from "../display/ScoreDisplayWidget";
 import { GameVariant } from "../logic/Constants";
 import MoveHistoryWidget from "../display/MoveHistoryWidget";
+import Move from "../logic/Move.tsx";
 
 // type State = {
 //     game: Game;
@@ -17,7 +18,7 @@ type Props = {
     variant: GameVariant
 }
 
-export default class GamePage extends React.Component<Props>{
+export default class GamePage extends React.Component<Props, any> {
     gameUpdateCallback = () => {
         // this.forceUpdate();
         this.state.rackWidgetRef.current!.updateRack(this.state.game.currentPlayer().rack);
@@ -49,7 +50,11 @@ export default class GamePage extends React.Component<Props>{
         this.state.game = new Game(this.gameUpdateCallback,this.props.variant);
     }
     rackExchangeCallback = (exTiles: string) => {
-        console.log("extiles " + exTiles);
+        exTiles = exTiles.toLowerCase();
+        //sort string for aesthetics
+        exTiles = exTiles.split("").sort().join("");
+        let move: Move = Move.exchangeMove(exTiles);
+        this.state.game.playMove(move);
     }
     exchangeFieldClickedCallback = () => {
         this.state.boardWidgetRef.current!.resetToBoard(true);

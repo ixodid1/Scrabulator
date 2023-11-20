@@ -85,6 +85,10 @@ export default class RackWidget extends React.Component<Props>{
         }
     }
     handleExchangeKeyEvent = (event: React.KeyboardEvent ) => {
+        // if(event.key != "Enter" || (event.key <= 'A' && event.key >= 'Z')){
+        //     console.log(event.key);
+        //     return;
+        // }
         if(event.key == "Enter"){
             let elem: HTMLElement | null = document.getElementById("exchangeInput");
             let div: HTMLElement | null = document.querySelector(".exchangeInputDiv");
@@ -95,6 +99,9 @@ export default class RackWidget extends React.Component<Props>{
             div!.style.display = "none";
         }
     }
+    handleExchangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+        event.target.value = event.target.value.replace(/[^a-zA-Z\?]/gi,"");
+    }
 
     render(){
         let size = tileSize + "px";
@@ -104,7 +111,11 @@ export default class RackWidget extends React.Component<Props>{
 
                 <div className="exchangeInputDiv" style={{display:"none"}}>
                     <p id="exchangeInputText">Exchange:</p>
-                    <input id="exchangeInput" onKeyDown={(e: React.KeyboardEvent) => this.handleExchangeKeyEvent(e)} onFocus={() => this.props.exchangeFieldClickedCallback()}></input>
+                    <input id="exchangeInput" type={"text"}
+                           onChange={(event: React.ChangeEvent<HTMLInputElement>) => event.target.value = event.target.value.replace(/[^a-zA-Z\?]/gi,"")}
+                           onKeyDown={(e: React.KeyboardEvent) => this.handleExchangeKeyEvent(e)}
+                           onFocus={() => this.props.exchangeFieldClickedCallback()}
+                           maxLength={7}></input>
                 </div>
                 <div className="rackWidgetDiv">
                 

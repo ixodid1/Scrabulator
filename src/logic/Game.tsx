@@ -5,7 +5,7 @@ import Move, {MoveType} from "./Move.tsx";
 import Letter from "./Letter.tsx";
 import Word from "./Word.tsx";
 import Rack, { rackFromString } from "./Rack.tsx";
-// import { getBestMove } from "../wasm/WASMUtil.tsx";
+import { getBestMove, isValidWord } from "../wasm/WASMUtil.tsx";
 import { GameVariant } from "./Constants.tsx";
 
 export default class Game{
@@ -96,6 +96,10 @@ export default class Game{
             console.log("Move is not playable: floating move " + move.formattedString());
             return false;
         }
+        if(!isValidWord(move.word.rawString())){
+            console.log("Move is not playable: invalid word " + move.word.rawString());
+            return false;
+        }
         this.scorelessTurns = 0;
         this.board.playMove(move);
         this.currentPlayer().score += move.score;
@@ -103,6 +107,20 @@ export default class Game{
         this.historyList.push({board: this.board, move: move, player1: new Player(this.player1.name,this.player1.score,this.player1.rack,this.player1.type), player2: new Player(this.player2.name,this.player2.score,this.player2.rack,this.player2.type), turn: this.playerTurn});
 
         this.currentPlayer().rack = copy;
+        return true;
+    }
+    handleExchange = (move: Move) : boolean => {
+        if(this.bag.count() < 7 || move.word.count() == 0){
+            return false;
+        }
+        for(let i = 0; i < Math.min(move.word.count(),this.currentPlayer().rack.count); i++){
+            this.currentPlayer().rack.removeTile(move.word.letters[i].idx);
+            this.bag.addTile(move.word.letters[i].idx);
+        }
+        this.currentPlayer().rack.drawTiles(this.bag,true);
+        this.scorelessTurns++;
+        this.historyList.push({board: this.board, move: move, player1: new Player(this.player1.name,this.player1.score,this.player1.rack,this.player1.type), player2: new Player(this.player2.name,this.player2.score,this.player2.rack,this.player2.type), turn: this.playerTurn});
+
         return true;
     }
     handle6Pass = () => {
@@ -113,7 +131,6 @@ export default class Game{
     }
 
     playMove = (move: Move): boolean => {
-        console.log("playmove called");
         if(move.type == MoveType.Place){
             let valid:boolean = this.handlePlaceMove(move);
             if(valid){
@@ -125,7 +142,11 @@ export default class Game{
                 return false;
             }
         }else if(move.type == MoveType.Exchange){
-
+            let valid: boolean = this.handleExchange(move);
+            if(!valid){
+                console.log("Could not exchange");
+                return false;
+            }
         }
         if(this.scorelessTurns >= 6){
             this.handle6Pass();
@@ -227,8 +248,8 @@ export default class Game{
     }
     computerMove = () => {
         if(this.currentPlayer().type == PlayerType.Computer){
-            // let move = getBestMove(this.board,this.bag,this.currentPlayer().rack);
-            // this.playMove(move);
+            let move = getBestMove(this.board,this.bag,this.currentPlayer().rack);
+            this.playMove(move);
         }
     }
 }

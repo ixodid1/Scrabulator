@@ -1,12 +1,6 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import BoardWidget from "./display/BoardWidget.tsx";
-import Rack from './logic/Rack.tsx';
-import RackWidget from './display/RackWidget.tsx';
 import GamePage from './pages/GamePage.tsx';
-// import { loadKWG, loadWASMmodule } from './wasm/WASMUtil.tsx';
+import { loadKWG, loadWASMmodule } from './wasm/WASMUtil.tsx';
 import { GameVariant } from './logic/Constants.tsx';
 
 // function myTest(){
@@ -20,8 +14,8 @@ import { GameVariant } from './logic/Constants.tsx';
 // }
 
 function App() {
-  // loadWASMmodule();
-  // loadKWG("NWL18");
+  loadWASMmodule();
+  loadKWG("NWL18");
   return (
     <>
         <GamePage variant={GameVariant.OMGWords}></GamePage>
