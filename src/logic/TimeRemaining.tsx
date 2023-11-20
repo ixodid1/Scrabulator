@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './TimeRemainingClock.scss';
 
 function ScrabbleTimer() {
     const initialTime = 600; // 10 minutes
