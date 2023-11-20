@@ -1,20 +1,27 @@
-.scoreDisplayDiv{
-    display:flex;
+.scoreDisplayDiv {
+    display: flex;
     flex-direction: column;
-    height:10%;
-}
-#player1ScoreDiv, #player2ScoreDiv{
-    display:flex;
-    flex-direction: row;
-    margin-bottom: 10%;
+    height: 10%;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
 }
 
-#player1Score, #player2Score{
-    margin-left: auto;
-    margin-top: 0px;
-    margin-bottom: 0px;
+.playerScoreDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
-#player1Name,#player2Name{
-    margin-top: 0px;
-    margin-bottom: 0px;
+
+#player1Name, #player2Name {
+    margin: 0;
+    font-weight: bold;
+}
+
+#player1Score, #player2Score {
+    margin: 0;
+    margin-left: 10px;
+    font-weight: bold;
 }
