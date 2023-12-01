@@ -1,23 +1,20 @@
-.scoreDisplayDiv {
-    display: flex;
+.scoreDisplayDiv{
+    display:flex;
     flex-direction: column;
-    height: 10%;
-    padding: 10px;
+    height:10%;
 }
-
-.playerScoreDiv {
-    display: flex;
+#player1ScoreDiv, #player2ScoreDiv{
+    display:flex;
     flex-direction: row;
-    margin-bottom: 10px;
+    margin-bottom: 10%;
 }
 
-#player1Name, #player2Name {
-    margin: 0;
-    font-weight: bold;
+#player1Score, #player2Score{
+    margin-left: auto;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
-
-#player1Score, #player2Score {
-    margin: 0;
-    margin-left: 10px;
-    font-weight: bold;
+#player1Name,#player2Name{
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
